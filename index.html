@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobriety Calculator</title>
+</head>
+<body>
+    <h1>Sobriety Calculator</h1>
+    <div>
+        <label for="etohLevel">Serum ETOH Level (mg/dL):</label><br>
+        <input type="number" id="etohLevel" step="0.01">
+    </div>
+    <div>
+        <br><br>
+    </div>
+    <div>
+        <label for="timeTaken">Time Sample Taken:</label><br>
+        <input type="datetime-local" id="timeTaken">
+    </div>
+    <div>
+        <br><br>
+    </div>
+    <div>
+        <label for="drinkerType">Drinker Type:</label><br>
+        <select id="drinkerType">
+            <option value="heavy">Heavy Drinker</option>
+            <option value="light">Light Drinker</option>
+        </select>
+    </div>
+    <div>
+        <br><br>
+    </div>
+    <div>
+        <button onclick="calculateSobrietyTime()">Calculate</button>
+    </div>
+    <div>
+        <br><br>
+    </div>
+    <div>
+        <p id="sobrietyTime"></p>
+    </div>
+
+    <script>
+        function calculateSobrietyTime() {
+            const etohLevel = parseFloat(document.getElementById('etohLevel').value);
+            const timeTaken = new Date(document.getElementById('timeTaken').value);
+
+            // Get the selected drinker type
+            const drinkerType = document.getElementById('drinkerType').value;
+
+            // Determine the alcohol decrease rate based on drinker type
+            let decreaseRate;
+            if (drinkerType === 'heavy') {
+                decreaseRate = 30; // Heavy drinker: 30 units per hour
+            } else if (drinkerType === 'light') {
+                decreaseRate = 20; // Light drinker: 20 units per hour
+            }
+
+            // Perform sobriety time calculation
+            const sobrietyThreshold = 100; // Sobriety threshold (e.g., 100 ETOH)
+            let adjustedEtOHLevel = etohLevel;
+
+            // Calculate the time until sober
+            const timeUntilSoberHours = (adjustedEtOHLevel - sobrietyThreshold) / decreaseRate;
+
+            // Calculate the estimated time of sobriety by adding the time until sober to the time taken
+            const estimatedTimeOfSober = new Date(timeTaken.getTime() + (timeUntilSoberHours * 60 * 60 * 1000));
+
+            // Format the estimated time of sobriety
+            const soberTimeString = estimatedTimeOfSober.toLocaleString();
+
+            document.getElementById('sobrietyTime').textContent = `Estimated time of sobriety (100 ETOH): ${soberTimeString}`;
+        }
+    </script>
+</body>
+</html>
